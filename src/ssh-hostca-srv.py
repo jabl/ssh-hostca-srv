@@ -45,13 +45,21 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        self._set_headers()
-        self.wfile.write(b"<html><body><h1>hi!</h1></body></html>\n")
+        """Return a ssh_known_hosts line with the CA public key id"""
+        capub = capath + '.pub'
+        with open(capub, "rb") as f:
+            ca = f.read()
+        resp = b'@cert-authority * ' + ca
+        self._set_headers(len(resp))
+        self.wfile.write(resp)
 
     def do_HEAD(self):
         self._set_headers()
         
     def do_POST(self):
+        """Client POST's a ssh public host key, server signs it with host CA,
+returns signed certificate.
+        """
         import tempfile
         import os
         import socket
