@@ -8,9 +8,9 @@ A client can get a signed ssh host cert with something like::
 
   curl -o /etc/ssh/ssh_host_ed25519_key-cert.pub -F file=@/etc/ssh/ssh_host_ed25519_key.pub http://sshca.example.org:8080
 
-The ssh_known_hosts line for the CA can be retrieved with a normal HTTP GET request, like::
+A ssh known_hosts line for the CA can be retrieved with a normal HTTP GET request, like::
 
-  curl http://sshca.example.org:8080
+  curl http://sshca.example.org:8080 >> /etc/ssh/ssh_known_hosts
 
 TODO
 ----
