@@ -56,9 +56,10 @@ def sign(pubkeypath, hostname):
 def do_GET():
     """Return a ssh_known_hosts line with the CA public key id"""
     capub = capath + '.pub'
+    cadomain = os.getenv('SSH_CADOMAIN', '*')
     with open(capub, "rb") as f:
         ca = f.read()
-    resp = b'@cert-authority * ' + ca
+    resp = b'@cert-authority ' + cadomain + ' ' + ca
     return Response(resp, mimetype='application/octet-stream')
 
 def do_POST():

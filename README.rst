@@ -29,6 +29,9 @@ The environment variable ``SSH_CAPATH`` should point to the path of
 the SSH host CA private key. It defaults to ``./hostca`` in the
 current directory.
 
+The environment variable ``SSH_CADOMAIN`` specifies the DNS domain for
+which the known_hosts specifies that the CA public key is valid.
+
 TODO
 ----
 
