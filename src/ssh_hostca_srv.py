@@ -37,18 +37,24 @@ import os
 
 capath = os.getenv('SSH_CAPATH', './hostca')
 
-def sign(pubkeypath, hostname):
+def sign(pubkeypath, remote_addr):
     """Sign a ssh host public key"""
     import subprocess
     import os.path
-    host_short = hostname.split('.')[0]
-    if host_short != hostname:
-        principals = host_short + ',' + hostname
-    else:
-        principals = hostname
+    import socket
+    host = socket.gethostbyaddr(remote_addr)
+    principals = set()
+    principals.add(host[0])
+    host_short = host[0].split('.')[0]
+    principals.add(host_short)
+    for alias in host[1]:
+        principals.add(alias)
+        alias_short = alias.split('.')[0]
+        principals.add(alias_short)
+    princ_str = ','.join(principals)
     subprocess.check_call(['/usr/bin/ssh-keygen', '-s', capath, 
-                           '-I', hostname, '-h',
-                           '-n', principals, pubkeypath])
+                           '-I', host[0], '-h',
+                           '-n', princ_str, pubkeypath])
     certpath = pubkeypath.rsplit('.', 1)[0] + '-cert.pub'
     return certpath
 
@@ -68,15 +74,13 @@ def do_POST():
     """
     import tempfile
     import os
-    import socket
-    hostname = socket.gethostbyaddr(request.remote_addr)[0]
     pubkeyfile = request.files['file']
     if not pubkeyfile:
         return ""
     t = tempfile.mkdtemp()
     pubkeypath = os.path.join(t, 'key.pub')
     pubkeyfile.save(pubkeypath)
-    certpath = sign(pubkeypath, hostname)
+    certpath = sign(pubkeypath, request.remote_addr)
     with open(certpath, 'rb') as f:
         certcontent = f.read()
     os.unlink(certpath)
