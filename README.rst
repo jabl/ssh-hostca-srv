@@ -17,13 +17,13 @@ Running
 
 ssh-hostca-srv is built using `flask <http://flask.pocoo.org/>`_ . You can start it directly with::
 
-  python path/to/ssh-hostca-srv.py
+  python path/to/ssh_hostca_srv.py
 
 This launches the flask internal webserver on
 port 8000. Alternatively, you can deploy it like any other WSGI
 app. E.g. with gunicorn, something like::
 
-  gunicorn --pythonpath path/to/src ssh-hostca-srv:app
+  gunicorn --pythonpath path/to/src ssh_hostca_srv:app
 
 The environment variable ``SSH_CAPATH`` should point to the path of
 the SSH host CA private key. It defaults to ``./hostca`` in the
