@@ -45,12 +45,8 @@ def sign(pubkeypath, remote_addr):
     host = socket.gethostbyaddr(remote_addr)
     principals = set()
     principals.add(host[0])
-    host_short = host[0].split('.')[0]
-    principals.add(host_short)
     for alias in host[1]:
         principals.add(alias)
-        alias_short = alias.split('.')[0]
-        principals.add(alias_short)
     princ_str = ','.join(principals)
     subprocess.check_call(['/usr/bin/ssh-keygen', '-s', capath, 
                            '-I', host[0], '-h',
